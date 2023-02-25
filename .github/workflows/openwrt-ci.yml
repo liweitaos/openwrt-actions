@@ -39,6 +39,8 @@ jobs:
           echo "已安装内存详细信息："
           sudo lshw -short -C memory | grep GiB
           echo -e "\n"
+          free -h
+          echo -e "\n"
           echo "--------------------------硬盘信息--------------------------"
           echo -e  "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l) \n"
           echo "硬盘详情："
@@ -96,7 +98,7 @@ jobs:
           chmod +x ./diy-part2.sh && ./diy-part2.sh
 
       - name: SSH connection to Actions
-        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh != 'false') || contains(github.event.action, 'ssh')
         uses: P3TERX/ssh2actions@v1.0.0
 
       - name: Generate configuration file
@@ -151,12 +153,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: OpenWrt_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}_firmware
-          path: ./artifact/firmware/
+          path: ./openwrt/artifact/firmware/
 
       - name: Upload firmware to release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./artifact/firmware/*"
+          artifacts: "./openwrt/artifact/firmware/*"
+          tag: ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
           name: ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
           token: ${{ secrets.ACCESS_TOKEN }}
 

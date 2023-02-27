@@ -46,6 +46,19 @@ jobs:
           echo "硬盘详情："
           df -Th
 
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+
+      - name: Maximize space Resources
+        run: |
+          free -h
+          echo -e "\n"
+          df -Th
+
       - name: Space cleanup and Initialization environment
         env:
           DEBIAN_FRONTEND: noninteractive
